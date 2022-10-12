@@ -9,13 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.xml.crypto.Data;
-
 /**
  * @author ：Polarbear
  * @date ：Created 2022/9/27 10:44
- * @description：
+ * @description： 测试喔
  */
 //json 数据交互
 @RestController
@@ -35,4 +32,15 @@ public class ArticleController {
 //        int i = 10/0;
         return articleService.listArticle(pagePrams);
     }
+
+
+    /**
+     * 首页 最热文章
+     */
+    @PostMapping("hot")
+    public Result hotArticle(){
+        int limit =5;
+        return articleService.hotArticle(limit);
+    }
+
 }

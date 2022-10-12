@@ -15,7 +15,9 @@ import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 //import org.springframework.data.domain.Page;
@@ -54,6 +56,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     }
 
+
+
+
     private List<ArticleVo> copyList(List<Article> records,boolean isTag,boolean isAuthor) {
         List <ArticleVo> articleVoList = new ArrayList<>();
         for (Article record : records) {
@@ -63,8 +68,6 @@ public class ArticleServiceImpl implements ArticleService {
         return articleVoList;
     }
 
-//    private ArticleVo copy(Article record) {
-//    }
 
     private ArticleVo copy(Article article,boolean isTag,boolean isAuthor){
         ArticleVo articleVo = new ArticleVo();
@@ -81,6 +84,23 @@ public class ArticleServiceImpl implements ArticleService {
         }
         return articleVo;
 
+    }
+
+    @Override
+    public Result hotArticle(int limit) {
+        /**
+         * 查询最热文章
+         * @param limit
+         * @return
+         */
+        LambdaQueryWrapper<Article>  queryWrapper =new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Article::getViewCounts);
+        queryWrapper.select(Article::getId,Article::getTitle);
+        queryWrapper.last("limit "+limit);
+        //select id ,title from article order  by view_counts desc limit 4
+        List<Article> articles = articleMapper.selectList(queryWrapper);
+
+        return Result.success(copyList(articles,false,false));
     }
 
 

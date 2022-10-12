@@ -13,4 +13,11 @@ public interface ArticleService {
      */
     Result listArticle(PagePrams pagePrams);
 
+
+    /**
+     * 获取最热文章
+     * @param limit
+     * @return
+     */
+    Result hotArticle(int limit);
 }
