@@ -13,4 +13,15 @@ public interface TagMapper  extends BaseMapper<Tag> {
      */
     @Resource
     List <Tag> findTagsByArticleid(Long articleId);
+
+
+    /**
+     * 查询最热的标签 前n条
+     * @param limit
+     * @return
+     */
+    @Resource
+    List<Long> findHostTagIds(int limit);
+    @Resource
+    List<Tag> findTagsByTagIds(List<Long> tagIds);
 }

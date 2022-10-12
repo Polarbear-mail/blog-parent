@@ -11,4 +11,19 @@
 
     </select>
 
+    <!--    List <Long>  tagIds = tagMapper.findHostTagIds(limit);-->
+    <select id="findHostTagIds" parameterType="int" resultType = "java.lang.Long">
+        select tag_id from ms_article_tag group by tag_id ORDER BY count(*) desc limit #{limit}
+    </select>
+
+<!--    List<Tag> tagList = tagMapper.findTagsByTagIds(tagIds);-->
+    <select id="findTagsByTagIds" parameterType="list" resultType = "com.mszlu.blog.dao.pojo.Tag">
+        select id,tag_name as tagName from ms_tag
+        where id in
+        <foreach collection="tagIds" item = "tagId" separator="," open="(" close=")">
+            #{tagId}
+        </foreach>
+    </select>
+
+
 </mapper>

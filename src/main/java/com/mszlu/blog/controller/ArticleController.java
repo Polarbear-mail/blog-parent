@@ -32,6 +32,7 @@ public class ArticleController {
      */
     @PostMapping
     public Result listArticle(@RequestBody PagePrams pagePrams){
+//        int i = 10/0;
         return articleService.listArticle(pagePrams);
     }
 }
