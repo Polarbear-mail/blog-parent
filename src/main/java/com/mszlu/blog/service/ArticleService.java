@@ -20,4 +20,19 @@ public interface ArticleService {
      * @return
      */
     Result hotArticle(int limit);
+
+
+    /**
+     * 获取最新文章
+     * @param limit
+     * @return
+     */
+    Result newArticle(int limit);
+
+
+    /**
+     * 文章归档
+     * @return
+     */
+    Result listArchives();
 }

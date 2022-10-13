@@ -2,8 +2,8 @@ package com.mszlu.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mszlu.blog.dao.dos.Archives;
 import com.mszlu.blog.dao.mapper.ArticleMapper;
-//import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.service.ArticleService;
 import com.mszlu.blog.service.SysUserService;
@@ -15,16 +15,16 @@ import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+
 //import org.springframework.data.domain.Page;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    @Autowired
+    @Resource
     private ArticleMapper articleMapper;
 
     @Autowired
@@ -101,6 +101,27 @@ public class ArticleServiceImpl implements ArticleService {
         List<Article> articles = articleMapper.selectList(queryWrapper);
 
         return Result.success(copyList(articles,false,false));
+    }
+
+    @Override
+    public Result newArticle(int limit) {
+        /**
+         * 获取最新文章
+         */
+        LambdaQueryWrapper<Article> queryWrapper =new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Article::getCreateDate);
+        queryWrapper.select(Article::getId,Article::getTitle);
+        queryWrapper.last("limit "+ limit);
+        // select id,title from article order by createdata desc limit
+        List<Article> articles = articleMapper.selectList(queryWrapper);
+
+        return Result.success(copyList(articles,false,false));
+    }
+
+    @Override
+    public Result listArchives() {
+        List<Archives> archivesList = articleMapper.listArchives();
+        return Result.success(archivesList);
     }
 
 
