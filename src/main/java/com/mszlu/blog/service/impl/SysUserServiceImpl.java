@@ -71,4 +71,21 @@ public class SysUserServiceImpl implements SysUserService {
         loginUserVo.setAccount(sysUser.getAccount());
         return Result.success(loginUserVo);
     }
+
+    @Override
+    public SysUser findUserByAccount(String account) {
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getAccount,account);
+        queryWrapper.last("limit 1");
+        return  this.sysUserMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public void save(SysUser sysUser) {
+        // 保存用户这个ID会自动生成
+        // 默认生成的的id是分布式id，雪花算法
+        // mybatisplus
+        this.sysUserMapper.insert(sysUser);
+
+    }
 }

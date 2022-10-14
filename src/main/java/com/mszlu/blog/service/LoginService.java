@@ -4,7 +4,9 @@ import com.mszlu.blog.dao.pojo.SysUser;
 import com.mszlu.blog.vo.Result;
 import com.mszlu.blog.vo.params.LoginPram;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface LoginService {
 
     /**
@@ -17,9 +19,16 @@ public interface LoginService {
     SysUser checkToken(String token);
 
     /**
-     * 推出登录
+     * 退出登录
      * @param token
      * @return
      */
     Result logout(String token);
+
+    /**
+     * 注册功能
+     * @param loginPram
+     * @return
+     */
+    Result register(LoginPram loginPram);
 }
