@@ -7,10 +7,7 @@ import com.mszlu.blog.dao.mapper.ArticleBodyMapper;
 import com.mszlu.blog.dao.mapper.ArticleMapper;
 import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.dao.pojo.ArticleBody;
-import com.mszlu.blog.service.ArticleService;
-import com.mszlu.blog.service.CategoryService;
-import com.mszlu.blog.service.SysUserService;
-import com.mszlu.blog.service.TagService;
+import com.mszlu.blog.service.*;
 import com.mszlu.blog.vo.ArticleBodyVo;
 import com.mszlu.blog.vo.ArticleVo;
 import com.mszlu.blog.vo.Result;
@@ -149,6 +146,9 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(archivesList);
     }
 
+    @Autowired
+    private ThreadService threadService;
+
     @Override
     public Result findArticleById(Long articleId) {
         /**
@@ -157,16 +157,26 @@ public class ArticleServiceImpl implements ArticleService {
          */
         Article article = this.articleMapper.selectById(articleId);
         ArticleVo articleVo = copy(article, true, true,true,true);
-        if (articleVo == null){
-            return Result.fail(1234,"该文章已删除");
-        }
+//        if (articleVo == null){
+//            return Result.fail(1234,"该文章已删除");
+//        }
+        /**
+         * 查看完文章，新增浏览量，
+         * 更新时写锁，阻塞其他操作
+         * 如果更新出现问题，不能影响文章的操作
+         * 线程池 可以把更新操作扔到线程池中执行，和主线程不相关
+         */
+        threadService.updateArticleViewCount(articleMapper,article);
+
         return Result.success(articleVo);
 
     }
 
+
+
+    // 文章内容
     @Resource
     private ArticleBodyMapper articleBodyMapper;
-
     private ArticleBodyVo findArticleBodyById(Long bodyId) {
         ArticleBody articleBody = articleBodyMapper.selectById(bodyId);
         ArticleBodyVo articleBodyVo =  new ArticleBodyVo();
