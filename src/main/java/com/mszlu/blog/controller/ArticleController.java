@@ -4,10 +4,7 @@ import com.mszlu.blog.service.ArticleService;
 import com.mszlu.blog.vo.Result;
 import com.mszlu.blog.vo.params.PagePrams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author ：Polarbear
@@ -45,7 +42,7 @@ public class ArticleController {
 
 
     /**
-     * 首页 最热文章
+     * 首页 最新文章
      */
     @PostMapping("new")
     public Result newArticle(){
@@ -59,6 +56,16 @@ public class ArticleController {
     @PostMapping("listArchives")
     public Result listArchives(){
         return articleService.listArchives();
+    }
+
+
+    /**
+     * 文章内容详情
+     */
+
+    @PostMapping("view/{id}")
+    public Result findArticleById(@PathVariable("id") Long articleId){
+        return articleService.findArticleById(articleId);
     }
 
 
