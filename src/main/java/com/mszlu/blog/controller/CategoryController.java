@@ -1,6 +1,6 @@
 package com.mszlu.blog.controller;
 
-import com.mszlu.blog.service.TagService;
+import com.mszlu.blog.service.CategoryService;
 import com.mszlu.blog.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,27 +9,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author ：Polarbear
- * @date ：Created 2022/10/12 9:55
+ * @date ：Created 2022/10/16 15:39
  * @description：
  */
 
 @RestController
-@RequestMapping("tags")
-public class TagsController {
+@RequestMapping("categorys")
+public class CategoryController {
 
     @Autowired
-    private TagService tagService;
+    private CategoryService categoryService;
 
-    @GetMapping("hot")
-    public Result hot(){
-        int limit = 4;
-//        tagService.hots(limit);
-        return tagService.hots(limit);
-    }
 
     @GetMapping
-    public Result findAll() {
-        return tagService.findAll();
-//       tagService.hots(limit);
+    public Result categorys(){
+        return categoryService.findAll();
     }
-    }
+}

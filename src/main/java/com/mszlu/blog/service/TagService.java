@@ -15,5 +15,12 @@ public interface TagService {
     List<TagVo> findTagsByArticleid(Long articleId);
 
     Result hots(int limit);
+
+
+    /**
+     * 查询所有的文章标签
+     */
+
+    Result findAll();
 }
 

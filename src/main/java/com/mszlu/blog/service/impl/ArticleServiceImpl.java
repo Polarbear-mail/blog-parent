@@ -5,12 +5,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mszlu.blog.dao.dos.Archives;
 import com.mszlu.blog.dao.mapper.ArticleBodyMapper;
 import com.mszlu.blog.dao.mapper.ArticleMapper;
+import com.mszlu.blog.dao.mapper.ArticleTagMapper;
 import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.dao.pojo.ArticleBody;
+import com.mszlu.blog.dao.pojo.ArticleTag;
+import com.mszlu.blog.dao.pojo.SysUser;
 import com.mszlu.blog.service.*;
+import com.mszlu.blog.utils.UserThreadLocal;
 import com.mszlu.blog.vo.ArticleBodyVo;
 import com.mszlu.blog.vo.ArticleVo;
 import com.mszlu.blog.vo.Result;
+import com.mszlu.blog.vo.TagVo;
+import com.mszlu.blog.vo.params.ArticleParam;
 import com.mszlu.blog.vo.params.PagePrams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -20,8 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-@Transactional
+import java.util.Map;
+
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
@@ -33,6 +41,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private ArticleTagMapper articleTagMapper;
 
     @Override
     public Result listArticle(PagePrams pagePrams) {
@@ -142,6 +153,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Result listArchives() {
+        /** 文章的归档
+         *
+         */
         List<Archives> archivesList = articleMapper.listArchives();
         return Result.success(archivesList);
     }
@@ -172,6 +186,55 @@ public class ArticleServiceImpl implements ArticleService {
 
     }
 
+    @Override
+    public Result publish(ArticleParam articleParam) {
+        // 此接口要加入到登录拦截当中
+        SysUser sysUser = UserThreadLocal.get();
+        /**
+         * 1. 发布文章，构建Article对象
+         * 2. 作者id,当前的登录用户
+         * 3. 拿到标签，将标签加入到关联列表当中
+         * 4. body 内容存储，articleId,bodyId
+         */
+
+        Article article = new Article();
+        // 设置获取的默认值
+        article.setAuthorId(sysUser.getId());
+        article.setWeight(Article.Article_Common);
+        article.setViewCounts(0);
+        article.setTitle(articleParam.getTitle());
+        article.setSummary(articleParam.getSummary());
+        article.setCommentCounts(0);
+        article.setCreateDate(System.currentTimeMillis());
+        article.setCategoryId(articleParam.getCategory().getId());
+        // 插入之后会生成一个文章id
+        this.articleMapper.insert(article);
+        //tag
+        List<TagVo> tags = articleParam.getTags();
+        if (tags != null){
+            for (TagVo tag : tags) {
+                Long articleId = article.getId();
+                ArticleTag articleTag = new ArticleTag();
+                articleTag.setTagId(tag.getId());
+                articleTag.setArticleId(articleId);
+                articleTagMapper.insert(articleTag);
+            }
+        }
+
+        // 插入body
+        ArticleBody articleBody = new ArticleBody();
+        articleBody.setArticleId(article.getId());
+        articleBody.setContent(articleParam.getBody().getContent());
+        articleBody.setContentHtml(articleParam.getBody().getContentHtml());
+        articleBodyMapper.insert(articleBody);
+
+        article.setBodyId(articleBody.getId());
+        articleMapper.updateById(article);
+        // 建立map存取id
+        Map<String,String> map = new HashMap<>();
+        map.put("id",article.getId().toString());
+        return Result.success(map);
+    }
 
 
     // 文章内容

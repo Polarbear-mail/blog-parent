@@ -2,6 +2,8 @@ package com.mszlu.blog.controller;
 
 import com.mszlu.blog.service.ArticleService;
 import com.mszlu.blog.vo.Result;
+import com.mszlu.blog.vo.params.ArticleBodyParam;
+import com.mszlu.blog.vo.params.ArticleParam;
 import com.mszlu.blog.vo.params.PagePrams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +68,15 @@ public class ArticleController {
     @PostMapping("view/{id}")
     public Result findArticleById(@PathVariable("id") Long articleId){
         return articleService.findArticleById(articleId);
+    }
+
+
+    //接口url：/articles/publish
+    //
+    //请求方式：POST
+    @PostMapping("publish")
+    public Result publish(@RequestBody ArticleParam articleParam){
+        return articleService.publish(articleParam);
     }
 
 
