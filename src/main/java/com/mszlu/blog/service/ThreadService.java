@@ -28,7 +28,7 @@ public class ThreadService {
         // update article set view_counts =100 where view_counts =99 and id =1
         articleMapper.update(articleUpdate,updateWrapper);
         try {
-            Thread.sleep(5000);
+            Thread.sleep(500);
             System.out.println("更新完成了");
         } catch (InterruptedException e) {
             e.printStackTrace();
