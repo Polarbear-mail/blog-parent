@@ -12,5 +12,7 @@ import lombok.Data;
 public class PagePrams {
     private  int page = 1;
     private  int pageSize = 3;
+    private  Long categoryId;
+    private  Long tagId;
 
 }

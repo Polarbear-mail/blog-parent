@@ -32,4 +32,12 @@ public class TagsController {
         return tagService.findAll();
 //       tagService.hots(limit);
     }
+
+
+    @GetMapping("detail")
+    public Result findAllDetail() {
+        return tagService.findAllDetail();
+    }
+
+
     }

@@ -52,6 +52,11 @@ public class ArticleServiceImpl implements ArticleService {
          */
         Page <Article> page =new Page<>(pagePrams.getPage(), pagePrams.getPageSize());
         LambdaQueryWrapper<Article>  queryWrapper =new LambdaQueryWrapper<>();
+        if (pagePrams.getCategoryId() != null){
+            // and category_id = #{categoryId}
+            queryWrapper.eq(Article::getCategoryId,pagePrams.getCategoryId());
+
+        }
         // 是否置顶排序
         //queryWrapper.orderByDesc(Article::getWeight);
 

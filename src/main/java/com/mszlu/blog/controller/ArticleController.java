@@ -1,5 +1,6 @@
 package com.mszlu.blog.controller;
 
+import com.mszlu.blog.common.aop.LogAnnotation;
 import com.mszlu.blog.service.ArticleService;
 import com.mszlu.blog.vo.Result;
 import com.mszlu.blog.vo.params.ArticleBodyParam;
@@ -27,6 +28,8 @@ public class ArticleController {
      * @param pagePrams
      */
     @PostMapping
+    // 加上此注解可对当前接口记录日志
+    @LogAnnotation(module="文章",operater= "获取文章列表")
     public Result listArticle(@RequestBody PagePrams pagePrams){
 //        int i = 10/0;
         return articleService.listArticle(pagePrams);

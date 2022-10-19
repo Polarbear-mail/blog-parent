@@ -53,9 +53,26 @@ public class CategoryServiceImpl implements CategoryService {
     // 找到所有文章类型
     @Override
     public Result findAll() {
-        List<Category> categories = categoryMapper.selectList(new LambdaQueryWrapper<>());
         // 页面交互对象
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(Category::getId,Category::getCategoryName);
+        List<Category> categories = categoryMapper.selectList(new LambdaQueryWrapper<>());
 
         return Result.success(copyList(categories));
+    }
+
+    @Override
+    public Result findAllDetail() {
+        // 页面交互对象
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        List<Category> categories = categoryMapper.selectList(queryWrapper);
+        return Result.success(copyList(categories));
+    }
+
+    @Override
+    public Result findAllDetailById(Long id) {
+        Category category = categoryMapper.selectById(id);
+
+        return Result.success((copy(category)));
     }
 }
